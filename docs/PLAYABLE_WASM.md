@@ -51,4 +51,4 @@ The Galaxy workflow already:
 - packages the generated web/WASM files
 - uploads a `galaxy-client-wasm` artifact
 
-The workflow cannot manufacture the required proprietary Minecraft input. For a complete playable build, that input must be supplied through a build environment where you have the right to use it.
+The workflow cannot manufacture the required proprietary Minecraft input. For a complete playable build, that input must be supplied through a build environment where you have the right to use it. After a successful build, the generated upstream WASM website is published under `/game/`; the Galaxy launcher remains at `/` and `game.html` redirects to `/game/index.html`.
