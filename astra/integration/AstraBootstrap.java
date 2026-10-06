@@ -5,6 +5,7 @@ import astra.config.AstraConfig;
 import astra.config.PerformanceProfile;
 import astra.performance.PerformanceController;
 
+/** Galaxy Client runtime bootstrap. */
 public final class AstraBootstrap {
     private static final AstraConfig CONFIG = new AstraConfig();
     private static final PerformanceController PERFORMANCE = new PerformanceController(CONFIG);
@@ -16,12 +17,13 @@ public final class AstraBootstrap {
         if (initialized) return;
         synchronized (AstraBootstrap.class) {
             if (initialized) return;
-            PERFORMANCE.setProfile(PerformanceProfile.BALANCED);
+            PERFORMANCE.setProfile(PerformanceProfile.HIGH_FPS);
             initialized = true;
         }
     }
 
     public static String clientName() { return ClientInfo.NAME; }
+    public static String version() { return ClientInfo.VERSION; }
     public static PerformanceController performance() { return PERFORMANCE; }
     public static AstraConfig config() { return CONFIG; }
 }
