@@ -9,6 +9,14 @@ public final class PerformanceController {
     public PerformanceController(AstraConfig config) { this.config = config; }
     public void setProfile(PerformanceProfile profile) { config.setProfile(profile); config.applyProfile(); }
     public boolean shouldCullEntities() { return config.isEntityCulling(); }
+    public boolean shouldCullEntity(double entityX, double entityY, double entityZ, double cameraX, double cameraY, double cameraZ) {
+        if (!config.isEntityCulling()) return false;
+        double dx = entityX - cameraX;
+        double dy = entityY - cameraY;
+        double dz = entityZ - cameraZ;
+        double max = Math.max(32.0, config.getRenderDistance() * 16.0);
+        return dx * dx + dy * dy + dz * dz > max * max;
+    }
     public boolean reduceParticles() { return config.isParticleReduction(); }
     public boolean animateTextures() { return config.isAnimatedTextures(); }
     public boolean useDynamicFps() { return config.isDynamicFps(); }
