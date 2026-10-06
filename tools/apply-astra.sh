@@ -62,7 +62,7 @@ patch(
    ) {
       if (!AstraHooks.allowParticle(this.getParticleCount())) {
          return null;
-      }
+      } /* GALAXY_PARTICLE_GATE */
       Particle particle = this.makeParticle(options, x, y, z, xa, ya, za);""",
     "GALAXY_PARTICLE_GATE",
 )
