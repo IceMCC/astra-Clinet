@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Galaxy Client — Web Launcher</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#eef3ff}
+body{background:#050816;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 10%,#3155d955,transparent 34%),radial-gradient(circle at 85% 15%,#8739c955,transparent 30%),radial-gradient(circle at 50% 90%,#1450a933,transparent 35%)}
+.wrap{width:min(1180px,92vw);margin:auto}
+header{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #ffffff12}
+.logo{font-size:23px;font-weight:950;letter-spacing:-.04em}.logo span{color:#8caeff}
+nav{display:flex;gap:8px}nav a{color:#aab6d4;text-decoration:none;padding:9px 13px;border-radius:10px;font-size:14px}nav a:hover{background:#ffffff0b;color:#fff}
+.hero{padding:90px 0 55px;display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:center}
+.badge{display:inline-flex;padding:7px 11px;border:1px solid #ffffff18;border-radius:999px;background:#ffffff09;color:#9eb6ff;font-size:12px;font-weight:800}
+h1{font-size:clamp(48px,7vw,82px);line-height:.95;margin:18px 0;letter-spacing:-.065em}
+.lead{color:#aeb9d2;font-size:18px;line-height:1.7;max-width:650px}
+.actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:13px;padding:14px 20px;font-weight:900;text-decoration:none;cursor:pointer}
+.primary{background:#91b2ff;color:#07101f;box-shadow:0 12px 35px #5d83ff33}.secondary{background:#ffffff0a;color:#eaf0ff;border:1px solid #ffffff14}
+.panel{border:1px solid #ffffff14;background:#ffffff08;backdrop-filter:blur(20px);border-radius:25px;padding:25px;box-shadow:0 25px 80px #0006}
+.panel h2{margin:0 0 6px}.muted{color:#94a3c4}
+.stat{display:flex;justify-content:space-between;padding:15px 0;border-bottom:1px solid #ffffff0d}.stat:last-child{border-bottom:0}
+section{padding:35px 0}.section-title{font-size:30px;margin:0 0 8px}.section-sub{color:#8997b8;margin:0 0 22px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{border:1px solid #ffffff12;background:#ffffff07;border-radius:18px;padding:22px;transition:.2s}.card:hover{transform:translateY(-3px);background:#ffffff0b}.icon{font-size:26px}.card h3{margin:14px 0 7px}.card p{color:#929fbd;line-height:1.6;margin:0}
+footer{padding:35px 0 50px;color:#71809f;font-size:13px;border-top:1px solid #ffffff0d}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:55px}.cards{grid-template-columns:1fr}nav{display:none}}
+</style>
+<script src="mods.js"></script>\n</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">✦ Galaxy <span>Client</span></div>
+<nav><a href="#home">Home</a><a href="#clients">Launcher</a><a href="#features">Features</a><a href="game.html">Play</a></nav>
+</header>
+
+<main id="home">
+<section class="hero">
+<div>
+<span class="badge">⚡ Eaglercraft Web Client • Galaxy 0.1.0-dev</span>
+<h1>Your Minecraft.<br>In the browser.</h1>
+<p class="lead">A polished Galaxy web launcher for fast, simple access to the playable Eaglercraft client, performance controls and your Galaxy mod setup.</p>
+<div class="actions">
+<a class="btn primary" href="game.html">▶ Play Galaxy Client</a>
+<a class="btn secondary" href="#features">Explore Features</a>
+</div>
+</div>
+<div class="panel">
+<h2>Galaxy Launcher</h2>
+<p class="muted">Quick access</p>
+<div class="stat"><span>Client</span><b>Galaxy</b></div>
+<div class="stat"><span>Version</span><b>26.2 base</b></div>
+<div class="stat"><span>Web runtime</span><b>WASM-GC</b></div>
+<div class="stat"><span>Mods catalog</span><b>100</b></div>
+</div>
+</section>
+
+<section id="clients">
+<h2 class="section-title">Launch fast</h2>
+<p class="section-sub">No desktop installer needed — open the web launcher and start from your browser.</p>
+<div class="cards">
+<div class="card"><div class="icon">🚀</div><h3>Galaxy Client</h3><p>Launch the real browser game build when the WASM bundle is available.</p><div class="actions"><a class="btn primary" href="game.html">Launch</a></div></div>
+<div class="card"><div class="icon">⚙️</div><h3>Performance</h3><p>High-FPS focused settings with culling, particle, texture and dynamic-FPS controls.</p></div>
+<div class="card"><div class="icon">✦</div><h3>Mod Hub</h3><p>Browse the Galaxy 100-mod catalog from one clean web interface.</p></div>
+</div>
+</section>
+
+<section id="mods"><h2 class="section-title">Galaxy Mod Hub</h2><p class="section-sub">100 launcher entries ready to map to supported client features.</p><div id="mod-list" class="cards"></div></section>\n\n<section id="features">
+<h2 class="section-title">Built for smoother browsing</h2>
+<p class="section-sub">Galaxy keeps the launcher simple while the game remains the real Eaglercraft runtime.</p>
+<div class="cards">
+<div class="card"><div class="icon">⚡</div><h3>Fast paths</h3><p>Large launch buttons and simple navigation get you into the client quickly.</p></div>
+<div class="card"><div class="icon">✨</div><h3>Premium feel</h3><p>Glass panels, animated depth and a Galaxy space theme inspired by modern client hubs.</p></div>
+<div class="card"><div class="icon">📱</div><h3>Mobile-ready</h3><p>Responsive layout keeps the launcher usable on smaller screens too.</p></div>
+</div>
+</section>
+<script>const list=document.getElementById("mod-list"); if(window.GALAXY_MODS){list.innerHTML=window.GALAXY_MODS.map((m,i)=>`<div class="card"><div class="icon">✦</div><h3>${String(i+1).padStart(2,"0")} · ${m.name}</h3><p>Galaxy performance and utility catalog entry.</p></div>`).join("");}</script>\n</main>
+
+<footer>© 2026 Galaxy Client • Web launcher • Actual gameplay is provided by the generated Eaglercraft runtime.</footer>
+</div>
+</body>
+</html>
