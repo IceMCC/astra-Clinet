@@ -1,4 +1,4 @@
-name: Astra Eaglercraft Build
+name: Galaxy Client Build
 
 on:
   workflow_dispatch:
@@ -7,12 +7,18 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: galaxy-pages
+  cancel-in-progress: true
 
 jobs:
-  build:
+  compile:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Astra
+      - name: Checkout Galaxy Client
         uses: actions/checkout@v4
 
       - name: Checkout Eaglercraft 26.3 baseline
@@ -22,17 +28,56 @@ jobs:
           ref: main
           path: eaglercraft
 
-      - name: Apply Astra source overlay
-        run: |
-          chmod +x tools/apply-astra.sh
-          ./tools/apply-astra.sh eaglercraft
-
       - name: Set up Java 25
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "25"
 
+      - name: Check source overlay
+        run: |
+          chmod +x tools/apply-astra.sh
+          ./tools/apply-astra.sh eaglercraft --no-bootstrap
+          
       - name: Compile game sources
         working-directory: eaglercraft
         run: ./gradlew :game:compileJava --console=plain --no-daemon
+
+      - name: Package build evidence
+        run: |
+          mkdir -p dist
+          cp web/index.html dist/index.html
+          cp README.md dist/README.md
+          printf 'Galaxy Client source compilation succeeded.\n' > dist/BUILD_OK.txt
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: galaxy-client-build
+          path: dist
+
+  pages:
+    if: github.ref == 'refs/heads/main'
+    needs: compile
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download web package
+        uses: actions/download-artifact@v4
+        with:
+          name: galaxy-client-build
+          path: dist
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
