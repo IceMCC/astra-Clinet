@@ -1,11 +1,11 @@
 # Galaxy Client
 
-**Galaxy Client** is a performance-focused Eaglercraft-compatible client project by IceMCC.
+**Galaxy Client** is a performance-focused Eaglercraft 26.2-compatible client project by IceMCC.
 
 ## Current state
 
 - Galaxy branding and performance framework are in the repository.
-- The GitHub Actions pipeline compiles the Galaxy overlay against the community Eaglercraft 26.3 source tree.
+- The GitHub Actions pipeline targets an Eaglercraft 26.2 workspace, matching the 26.2 client generation requested for Galaxy.
 - GitHub Pages publishes a launcher shell after a successful compile.
 - The project does **not** include a proprietary Minecraft JAR or assets.
 
@@ -58,6 +58,7 @@ web/
 - [x] Compile workflow
 - [x] GitHub Pages launcher shell
 - [x] WASM-GC packaging/validation pipeline
+- [x] Eaglercraft 26.2 build baseline
 - [ ] In-game Galaxy settings screen
 - [ ] Verified renderer/entity culling hooks
 - [ ] Final pinned Eaglercraft baseline
