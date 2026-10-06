@@ -1,6 +1,5 @@
 package astra.integration;
 
-import net.minecraft.client.particle.Particle;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -20,8 +19,7 @@ public final class AstraHooks {
         return AstraBootstrap.config().isAnimatedTextures();
     }
 
-    public static boolean allowParticle(final Particle particle, final int currentCount) {
-        if (particle == null) return false;
+    public static boolean allowParticle(final int currentCount) {
         return !AstraBootstrap.config().isParticleReduction() || currentCount < REDUCED_PARTICLE_CAP;
     }
 
