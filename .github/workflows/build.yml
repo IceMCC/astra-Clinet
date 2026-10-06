@@ -19,54 +19,45 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GRADLE_OPTS: "-Xmx8g -XX:MaxMetaspaceSize=1g"
+      JAVA_TOOL_OPTIONS: "-Xmx12g -XX:MaxMetaspaceSize=2g"
     steps:
       - name: Checkout Galaxy Client
         uses: actions/checkout@v4
-
       - name: Checkout Eaglercraft 26.2 baseline
         uses: actions/checkout@v4
         with:
           repository: Joseytesting/Eaglercraft-26.2-Fabric-API-and
           ref: f73bff91f0f0840bc958c09ab536dbba1e146b2e
           path: eaglercraft
-
       - name: Set up Java 25
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "25"
-
       - name: Check and apply Galaxy source overlay
         run: |
           chmod +x tools/apply-astra.sh
           ./tools/apply-astra.sh eaglercraft
-
       - name: Compile game sources
         working-directory: eaglercraft
         run: ./gradlew :game:compileJava --console=plain --no-daemon --max-workers=2
-
       - name: Build browser JavaScript assets
         working-directory: eaglercraft
         run: ./gradlew :target_teavm:generateJavaScript --console=plain --no-daemon --max-workers=1
-
       - name: Build client WebAssembly GC
         working-directory: eaglercraft
         run: ./gradlew :target_teavm_wasm_gc:generateWasmGC --console=plain --no-daemon --max-workers=1
-
       - name: Build mesh WebAssembly worker
         working-directory: eaglercraft
         run: ./gradlew :target_teavm_wasm_gc_mesh:generateWasmGC --console=plain --no-daemon --max-workers=1
-
       - name: Build singleplayer server WebAssembly worker
         working-directory: eaglercraft
         run: ./gradlew :target_teavm_wasm_gc_server:generateWasmGC --console=plain --no-daemon --max-workers=1
-
       - name: Assemble the real WASM-GC web client
         working-directory: eaglercraft
         env:
           EAGLER_USE_DEDICATED_SERVER_WASM: "1"
         run: bash wasm-toolchain/deploy_wasm_web.sh
-
       - name: Validate generated playable web output
         run: |
           set -euo pipefail
@@ -81,8 +72,6 @@ jobs:
           grep -q "classes.wasm" "$WEB/index.html"
           grep -q "worker-bootstrap.js" "$WEB/index.html"
           echo "Galaxy playable WASM-GC web bundle validated."
-          find "$WEB" -maxdepth 2 -type f -printf '%p %s bytes\n' | sort
-
       - name: Package Galaxy launcher and game
         run: |
           set -euo pipefail
@@ -97,7 +86,6 @@ jobs:
           test -s dist/game/index.html
           test -s dist/game/classes.wasm
           test -s dist/game/server-worker.wasm
-
       - name: Upload WASM build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -117,15 +105,12 @@ jobs:
         with:
           name: galaxy-client-wasm
           path: dist
-
       - name: Configure Pages
         uses: actions/configure-pages@v5
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
