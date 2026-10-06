@@ -14,12 +14,11 @@ DEST="$PROJECT/game/src/main/java"
 mkdir -p "$DEST/astra"
 cp -R "$ROOT/astra/." "$DEST/astra/"
 
-python3 - "$DEST/net/minecraft/client/particle/ParticleEngine.java" "$DEST/net/minecraft/client/renderer/texture/TextureManager.java" "$DEST/net/minecraft/client/renderer/entity/EntityRenderDispatcher.java" "$MODE" <<'PY'
+python3 - "$DEST/net/minecraft/client/particle/ParticleEngine.java" "$DEST/net/minecraft/client/renderer/texture/TextureManager.java" "$DEST/net/minecraft/client/renderer/entity/EntityRenderDispatcher.java" <<'PY'
 from pathlib import Path
 import sys
 
 particles, textures, entities = map(Path, sys.argv[1:4])
-mode = sys.argv[4] if len(sys.argv) > 4 else ""
 
 def add_import(text, import_line):
     if import_line in text:
@@ -27,7 +26,7 @@ def add_import(text, import_line):
     lines = text.splitlines()
     package_end = next((i for i, line in enumerate(lines) if line.startswith("package ")), -1)
     if package_end < 0:
-        return text
+        raise SystemExit(f"Galaxy: cannot find package declaration for {import_line}")
     idx = package_end + 1
     while idx < len(lines) and (lines[idx].startswith("import ") or not lines[idx].strip()):
         idx += 1
@@ -36,20 +35,18 @@ def add_import(text, import_line):
 
 def patch(path, import_line, old, new, marker):
     if not path.exists():
-        print(f"Galaxy: optional hook target missing: {path}")
-        return
+        raise SystemExit(f"Galaxy: required hook target missing: {path}")
     s = path.read_text()
-    s = add_import(s, import_line)
-    if marker not in s and old in s:
-        s = s.replace(old, new, 1)
-        path.write_text(s)
-        print(f"Galaxy: patched {path}")
-    elif marker in s:
+    if marker in s:
         print(f"Galaxy: already patched {path}")
-    else:
-        print(f"Galaxy: source pattern not found in {path}; leaving it unchanged")
+        return
+    if old not in s:
+        raise SystemExit(f"Galaxy: source pattern not found in {path}; baseline changed")
+    s = add_import(s, import_line)
+    s = s.replace(old, new, 1)
+    path.write_text(s)
+    print(f"Galaxy: patched {path}")
 
-# Real particle admission gate.
 patch(
     particles,
     "import astra.integration.AstraHooks;",
@@ -60,14 +57,13 @@ patch(
     """   public @Nullable Particle createParticle(
       final ParticleOptions options, final double x, final double y, final double z, final double xa, final double ya, final double za
    ) {
-      if (!AstraHooks.allowParticle(this.particlesToAdd.size())) {
+      if (!AstraHooks.allowParticle(this.getParticleCount())) {
          return null;
       } /* GALAXY_PARTICLE_GATE */
       Particle particle = this.makeParticle(options, x, y, z, xa, ya, za);""",
     "GALAXY_PARTICLE_GATE",
 )
 
-# Animated texture tick gate.
 patch(
     textures,
     "import astra.integration.AstraHooks;",
@@ -81,7 +77,6 @@ patch(
     "GALAXY_TEXTURE_TICK_GATE",
 )
 
-# Distance gate layered before the existing frustum/render checks.
 patch(
     entities,
     "import astra.integration.AstraHooks;",
@@ -99,7 +94,6 @@ patch(
 )
 PY
 
-# Bootstrap is optional because community Eagler trees may use a different entry point.
 if [[ "$MODE" != "--no-bootstrap" ]]; then
   BOOT="$(find "$DEST" -type f -name 'ClientBootstrap.java' -print -quit || true)"
   if [[ -n "$BOOT" ]]; then
@@ -108,18 +102,23 @@ from pathlib import Path
 import sys
 p = Path(sys.argv[1])
 s = p.read_text()
+if "GALAXY_CLIENT_BOOTSTRAP" in s:
+    raise SystemExit(0)
+if "isBootstrapped = true;" not in s:
+    raise SystemExit(f"Galaxy: ClientBootstrap.java has no known bootstrap marker: {p}")
 if "import astra.integration.AstraBootstrap;" not in s:
     lines = s.splitlines()
     package_end = next((i for i, line in enumerate(lines) if line.startswith("package ")), -1)
+    if package_end < 0:
+        raise SystemExit(f"Galaxy: cannot find package declaration in {p}")
     idx = package_end + 1
     while idx < len(lines) and (lines[idx].startswith("import ") or not lines[idx].strip()):
         idx += 1
     lines.insert(idx, "import astra.integration.AstraBootstrap;")
     s = "\n".join(lines) + ("\n" if s.endswith("\n") else "")
 needle = "isBootstrapped = true;"
-if "GALAXY_CLIENT_BOOTSTRAP" not in s and needle in s:
-    s = s.replace(needle, needle + "\n         /* GALAXY_CLIENT_BOOTSTRAP */\n         AstraBootstrap.initialize();", 1)
-    p.write_text(s)
+s = s.replace(needle, needle + "\n         /* GALAXY_CLIENT_BOOTSTRAP */\n         AstraBootstrap.initialize();", 1)
+p.write_text(s)
 PY
   else
     echo "Galaxy: no ClientBootstrap.java found; performance hooks still applied."
