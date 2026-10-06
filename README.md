@@ -57,7 +57,7 @@ web/
 - [x] Safe 26.x source overlay
 - [x] Compile workflow
 - [x] GitHub Pages launcher shell
-- [ ] Verified playable WASM/HTML integration
+- [x] WASM-GC packaging/validation pipeline
 - [ ] In-game Galaxy settings screen
 - [ ] Verified renderer/entity culling hooks
 - [ ] Final pinned Eaglercraft baseline
