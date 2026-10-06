@@ -27,7 +27,7 @@ section{padding:35px 0}.section-title{font-size:30px;margin:0 0 8px}.section-sub
 footer{padding:35px 0 50px;color:#71809f;font-size:13px;border-top:1px solid #ffffff0d}
 @media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:55px}.cards{grid-template-columns:1fr}nav{display:none}}
 </style>
-</head>
+<script src="mods.js"></script>\n</head>
 <body>
 <div class="wrap">
 <header>
@@ -66,7 +66,7 @@ footer{padding:35px 0 50px;color:#71809f;font-size:13px;border-top:1px solid #ff
 </div>
 </section>
 
-<section id="features">
+<section id="mods"><h2 class="section-title">Galaxy Mod Hub</h2><p class="section-sub">100 launcher entries ready to map to supported client features.</p><div id="mod-list" class="cards"></div></section>\n\n<section id="features">
 <h2 class="section-title">Built for smoother browsing</h2>
 <p class="section-sub">Galaxy keeps the launcher simple while the game remains the real Eaglercraft runtime.</p>
 <div class="cards">
@@ -75,7 +75,7 @@ footer{padding:35px 0 50px;color:#71809f;font-size:13px;border-top:1px solid #ff
 <div class="card"><div class="icon">📱</div><h3>Mobile-ready</h3><p>Responsive layout keeps the launcher usable on smaller screens too.</p></div>
 </div>
 </section>
-</main>
+<script>const list=document.getElementById("mod-list"); if(window.GALAXY_MODS){list.innerHTML=window.GALAXY_MODS.map((m,i)=>`<div class="card"><div class="icon">✦</div><h3>${String(i+1).padStart(2,"0")} · ${m.name}</h3><p>Galaxy performance and utility catalog entry.</p></div>`).join("");}</script>\n</main>
 
 <footer>© 2026 Galaxy Client • Web launcher • Actual gameplay is provided by the generated Eaglercraft runtime.</footer>
 </div>
