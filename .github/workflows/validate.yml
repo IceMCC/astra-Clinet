@@ -34,7 +34,7 @@ jobs:
           block = re.search(r'const mods=\[(.*?)\]\.map', html, re.S)
           if not block:
               raise SystemExit("mods catalog not found")
-          names = re.findall(r'"([^"]+)"', block.group(1))
+          names = re.findall(r'\{"name":"([^"]+)"', block.group(1))
           if len(names) != 100:
               raise SystemExit(f"expected 100 mods, found {len(names)}")
           if len(set(names)) != 100:
