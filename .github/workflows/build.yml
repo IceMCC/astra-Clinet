@@ -34,11 +34,11 @@ jobs:
           distribution: temurin
           java-version: "25"
 
-      - name: Check source overlay
+      - name: Check and apply Galaxy source overlay
         run: |
           chmod +x tools/apply-astra.sh
           ./tools/apply-astra.sh eaglercraft
-          
+
       - name: Compile game sources
         working-directory: eaglercraft
         run: ./gradlew :game:compileJava --console=plain --no-daemon
@@ -47,17 +47,31 @@ jobs:
         working-directory: eaglercraft
         run: ./gradlew :target_teavm_wasm_gc:generateWasmGC --console=plain --no-daemon
 
-      - name: Package Galaxy WASM client
+      - name: Validate generated WASM web output
         run: |
+          set -euo pipefail
+          WEB="eaglercraft/target_teavm_wasm_gc/build/web"
+          test -d "$WEB"
+          test -f "$WEB/classes.wasm"
+          test -f "$WEB/eagruntime.js"
+          test -f "$WEB/index.html"
+          find "$WEB" -maxdepth 1 -type f -printf '%f\n' | sort
+          echo "Galaxy WASM runtime validation passed."
+
+      - name: Package Galaxy launcher and game
+        run: |
+          set -euo pipefail
           rm -rf dist
-          mkdir -p dist
-          cp -R eaglercraft/target_teavm_wasm_gc/build/web/. dist/ || true
+          mkdir -p dist/game
+          cp -R eaglercraft/target_teavm_wasm_gc/build/web/. dist/game/
           cp web/index.html dist/index.html
           cp web/index.html dist/galaxy-launcher.html
           cp web/game.html dist/game.html
           cp README.md dist/README.md
           printf 'Galaxy Client WASM-GC build completed.\n' > dist/BUILD_OK.txt
-          test -f dist/classes.wasm || find dist -name '*.wasm' -print
+          test -f dist/game/classes.wasm
+          test -f dist/game/eagruntime.js
+          test -f dist/game/index.html
 
       - name: Upload WASM build artifact
         uses: actions/upload-artifact@v4
