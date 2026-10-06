@@ -94,18 +94,35 @@ jobs:
           path: dist
 
   pages:
-    if: github.ref == "refs/heads/main"
+    if: always() && github.ref == "refs/heads/main"
     needs: compile
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download web package
+      - name: Download playable web package
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: galaxy-client-wasm
           path: dist
+      - name: Build safe Pages fallback
+        if: always()
+        run: |
+          set -euo pipefail
+          if test -s dist/index.html && test -s dist/game/index.html; then
+            echo "Using the real Galaxy WASM-GC build."
+            exit 0
+          fi
+          echo "Playable build artifact is unavailable; publishing the Galaxy launcher fallback so Pages never returns a blank/404 site."
+          rm -rf dist
+          mkdir -p dist
+          cp web/index.html dist/index.html
+          cp web/mods.js dist/mods.js
+          cp web/game.html dist/game.html
+          cp README.md dist/README.md
+          touch dist/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload Pages artifact
