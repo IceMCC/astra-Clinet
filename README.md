@@ -1,24 +1,33 @@
-# Astra Client
+# Galaxy Client
 
-**Astra Client** is a performance-focused Eaglercraft client project by IceMCC.
+**Galaxy Client** is a performance-focused Eaglercraft-compatible client project by IceMCC.
 
-> Status: **development / source integration stage**
+## Current state
 
-## What is being built
+- Galaxy branding and performance framework are in the repository.
+- The GitHub Actions pipeline compiles the Galaxy overlay against the community Eaglercraft 26.3 source tree.
+- GitHub Pages publishes a launcher shell after a successful compile.
+- The project does **not** include a proprietary Minecraft JAR or assets.
 
-Astra is designed around an Eaglercraft-compatible source pipeline instead of copying desktop Fabric/Forge JARs into a browser client.
+## Performance systems
 
-Planned performance systems:
+- Sodium-style rendering optimization hooks
+- Lithium-style game-loop optimization hooks
+- ImmediatelyFast-style batching/UI optimization direction
+- Entity culling decisions
+- Particle reduction
+- Animated-texture reduction
+- Dynamic-FPS controls
+- Fast-math toggle
+- Low / Balanced / High-FPS presets
 
-- Sodium-style rendering optimizations
-- Lithium-style game-loop optimizations
-- ImmediatelyFast-style batching/UI optimizations
-- Entity and block culling
-- Memory/resource optimizations
-- Dynamic FPS / browser visibility handling
-- Low-end, Balanced and High-FPS presets
-- Astra settings and branding
-- JavaScript/WASM browser builds
+These are source-level integrations for a browser client; normal desktop Fabric mod JARs cannot simply be dropped into Eaglercraft.
+
+## Building a playable browser client
+
+A truly playable browser build requires an Eaglercraft-compatible source/input set that you are licensed to use. The repository intentionally does not redistribute a vanilla Minecraft JAR or proprietary assets.
+
+The workflow currently proves the Galaxy source overlay can be compiled and publishes a Pages launcher shell. To turn that shell into the actual game, the generated standalone HTML/WebAssembly output from your licensed build must be published as the Pages site output.
 
 ## Repository layout
 
@@ -26,35 +35,29 @@ Planned performance systems:
 astra/
 ├── branding/
 ├── config/
+├── integration/
 ├── performance/
-└── README.md
+└── ui/
 
-docs/
-└── ARCHITECTURE.md
+tools/
+└── apply-astra.sh
 
-.github/
-└── workflows/
-    └── validate.yml
+web/
+└── index.html
+
+.github/workflows/
+├── build.yml
+└── validate.yml
 ```
-
-## Important
-
-The actual Minecraft/Eaglercraft integration needs a pinned Eaglercraft 26.x baseline. Community 26.x workspaces are not interchangeable, so Astra will pin one verified baseline before source patches are added.
-
-## Legal/build note
-
-Astra does not redistribute proprietary Minecraft assets or a vanilla Minecraft JAR. The build pipeline will use the appropriate user-supplied/licensed game input where required.
 
 ## Roadmap
 
-- [x] Astra project structure
-- [x] Performance configuration model
-- [x] Performance controller
-- [x] Branding metadata
-- [x] GitHub validation workflow
-- [ ] Pin Eaglercraft 26.x baseline
-- [ ] Integrate rendering hooks
-- [ ] Integrate culling
-- [ ] Integrate browser dynamic-FPS hooks
-- [ ] Add Astra settings screen
-- [ ] Build browser/WASM artifacts
+- [x] Galaxy branding
+- [x] Performance framework
+- [x] Safe 26.x source overlay
+- [x] Compile workflow
+- [x] GitHub Pages launcher shell
+- [ ] Verified playable WASM/HTML integration
+- [ ] In-game Galaxy settings screen
+- [ ] Verified renderer/entity culling hooks
+- [ ] Final pinned Eaglercraft baseline
