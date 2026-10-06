@@ -60,7 +60,7 @@ patch(
     """   public @Nullable Particle createParticle(
       final ParticleOptions options, final double x, final double y, final double z, final double xa, final double ya, final double za
    ) {
-      if (!AstraHooks.allowParticle(this.getParticleCount())) {
+      if (!AstraHooks.allowParticle(this.particlesToAdd.size())) {
          return null;
       } /* GALAXY_PARTICLE_GATE */
       Particle particle = this.makeParticle(options, x, y, z, xa, ya, za);""",
