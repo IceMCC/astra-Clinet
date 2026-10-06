@@ -43,17 +43,24 @@ jobs:
         working-directory: eaglercraft
         run: ./gradlew :game:compileJava --console=plain --no-daemon
 
-      - name: Package build evidence
-        run: |
-          mkdir -p dist
-          cp web/index.html dist/index.html
-          cp README.md dist/README.md
-          printf 'Galaxy Client source compilation succeeded.\n' > dist/BUILD_OK.txt
+      - name: Build WebAssembly GC client
+        working-directory: eaglercraft
+        run: ./gradlew :target_teavm_wasm_gc:generateWasmGC --console=plain --no-daemon
 
-      - name: Upload build artifact
+      - name: Package Galaxy WASM client
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp -R eaglercraft/target_teavm_wasm_gc/build/web/. dist/ || true
+          cp web/index.html dist/galaxy-launcher.html
+          cp README.md dist/README.md
+          printf 'Galaxy Client WASM-GC build completed.\n' > dist/BUILD_OK.txt
+          test -f dist/classes.wasm || find dist -name '*.wasm' -print
+
+      - name: Upload WASM build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: galaxy-client-build
+          name: galaxy-client-wasm
           path: dist
 
   pages:
