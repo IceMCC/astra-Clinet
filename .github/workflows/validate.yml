@@ -1,4 +1,4 @@
-name: Validate Astra
+name: Validate Galaxy Client
 
 on:
   push:
@@ -10,10 +10,56 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check Astra sources
+
+      - name: Validate repository layout
         shell: bash
         run: |
+          set -euo pipefail
           test -f astra/config/AstraConfig.java
           test -f astra/performance/PerformanceController.java
           test -f astra/branding/ClientInfo.java
-          echo "Astra source layout OK"
+          test -f astra/integration/AstraHooks.java
+          test -f tools/apply-astra.sh
+          test -f web/index.html
+          test -f web/game.html
+          bash -n tools/apply-astra.sh
+          echo "Galaxy source layout and shell syntax OK."
+
+      - name: Validate 100-mod launcher catalog
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          html = Path("web/index.html").read_text(encoding="utf-8")
+          block = re.search(r'const mods=\[(.*?)\]\.map', html, re.S)
+          if not block:
+              raise SystemExit("mods catalog not found")
+          names = re.findall(r'"([^"]+)"', block.group(1))
+          if len(names) != 100:
+              raise SystemExit(f"expected 100 mods, found {len(names)}")
+          if len(set(names)) != 100:
+              raise SystemExit("duplicate mod names found")
+          print("100 unique launcher mods verified.")
+
+      - name: Validate required Galaxy hooks
+        shell: python
+        run: |
+          from pathlib import Path
+          checks = {
+              "astra/integration/AstraHooks.java": [
+                  "allowParticle",
+                  "shouldTickTextures",
+                  "shouldRenderEntity",
+              ],
+              "tools/apply-astra.sh": [
+                  "GALAXY_PARTICLE_GATE",
+                  "GALAXY_TEXTURE_TICK_GATE",
+                  "GALAXY_ENTITY_DISTANCE_CULL",
+              ],
+          }
+          for file, needles in checks.items():
+              text = Path(file).read_text(encoding="utf-8")
+              for needle in needles:
+                  if needle not in text:
+                      raise SystemExit(f"{needle} missing from {file}")
+          print("Galaxy performance hook markers verified.")
