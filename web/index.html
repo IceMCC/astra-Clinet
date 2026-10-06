@@ -1,36 +1,83 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Galaxy Client</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Galaxy Client — Web Launcher</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#f4f7ff}
-body{background:radial-gradient(circle at 15% 20%,#263c88 0,transparent 35%),radial-gradient(circle at 85% 15%,#4b207e 0,transparent 30%),linear-gradient(135deg,#050816,#0b1024 55%,#120b22);overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(120,160,255,.06),transparent 70%);pointer-events:none}
-.app{width:min(1180px,94vw);margin:5vh auto;display:grid;grid-template-columns:220px 1fr;min-height:700px;border:1px solid #29375f;border-radius:24px;overflow:hidden;background:rgba(9,14,32,.84);backdrop-filter:blur(22px);box-shadow:0 30px 100px #0008}
-nav{padding:25px 16px;border-right:1px solid #29375f;background:#080d1ddd}
-.brand{font-size:24px;font-weight:900;margin:5px 10px 30px}.brand span{color:#8aaeff}
-.nav{display:grid;gap:8px}.nav button{background:transparent;border:0;color:#aeb9d8;text-align:left;padding:12px 14px;border-radius:12px;font-size:14px;cursor:pointer}.nav button.active,.nav button:hover{background:#182448;color:#fff}
-main{padding:30px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px}.eyebrow{color:#86a8ff;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.16em}h1{font-size:38px;margin:5px 0 0}.sub{color:#9eabca;margin:8px 0 26px}.card{border:1px solid #2a3860;background:#0d1530cc;border-radius:18px;padding:22px;margin-bottom:18px}.hero{display:flex;justify-content:space-between;align-items:center;gap:20px}.hero strong{font-size:20px}.hero p{color:#aeb9d8}.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:800;background:#8db0ff;color:#07101f;cursor:pointer}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mod{padding:14px;border:1px solid #29375d;border-radius:14px;background:#101a36}.mod b{display:block}.mod small{color:#8190b2}.toggle{float:right;width:38px;height:22px;border-radius:20px;background:#27385f;position:relative}.toggle:after{content:"";position:absolute;width:16px;height:16px;top:3px;right:3px;border-radius:50%;background:#8db0ff}.search{width:100%;padding:13px 15px;border-radius:12px;border:1px solid #2a3962;background:#080f25;color:#fff;margin-bottom:15px;outline:none}.status{color:#94a6cb;font-size:13px}
-@media(max-width:800px){.app{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}nav{border-right:0;border-bottom:1px solid #29375f}.nav{grid-template-columns:repeat(4,1fr)}.nav button{text-align:center}}
-</style></head>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:#eef3ff}
+body{background:#050816;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 10%,#3155d955,transparent 34%),radial-gradient(circle at 85% 15%,#8739c955,transparent 30%),radial-gradient(circle at 50% 90%,#1450a933,transparent 35%)}
+.wrap{width:min(1180px,92vw);margin:auto}
+header{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #ffffff12}
+.logo{font-size:23px;font-weight:950;letter-spacing:-.04em}.logo span{color:#8caeff}
+nav{display:flex;gap:8px}nav a{color:#aab6d4;text-decoration:none;padding:9px 13px;border-radius:10px;font-size:14px}nav a:hover{background:#ffffff0b;color:#fff}
+.hero{padding:90px 0 55px;display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:center}
+.badge{display:inline-flex;padding:7px 11px;border:1px solid #ffffff18;border-radius:999px;background:#ffffff09;color:#9eb6ff;font-size:12px;font-weight:800}
+h1{font-size:clamp(48px,7vw,82px);line-height:.95;margin:18px 0;letter-spacing:-.065em}
+.lead{color:#aeb9d2;font-size:18px;line-height:1.7;max-width:650px}
+.actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:13px;padding:14px 20px;font-weight:900;text-decoration:none;cursor:pointer}
+.primary{background:#91b2ff;color:#07101f;box-shadow:0 12px 35px #5d83ff33}.secondary{background:#ffffff0a;color:#eaf0ff;border:1px solid #ffffff14}
+.panel{border:1px solid #ffffff14;background:#ffffff08;backdrop-filter:blur(20px);border-radius:25px;padding:25px;box-shadow:0 25px 80px #0006}
+.panel h2{margin:0 0 6px}.muted{color:#94a3c4}
+.stat{display:flex;justify-content:space-between;padding:15px 0;border-bottom:1px solid #ffffff0d}.stat:last-child{border-bottom:0}
+section{padding:35px 0}.section-title{font-size:30px;margin:0 0 8px}.section-sub{color:#8997b8;margin:0 0 22px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{border:1px solid #ffffff12;background:#ffffff07;border-radius:18px;padding:22px;transition:.2s}.card:hover{transform:translateY(-3px);background:#ffffff0b}.icon{font-size:26px}.card h3{margin:14px 0 7px}.card p{color:#929fbd;line-height:1.6;margin:0}
+footer{padding:35px 0 50px;color:#71809f;font-size:13px;border-top:1px solid #ffffff0d}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:55px}.cards{grid-template-columns:1fr}nav{display:none}}
+</style>
+</head>
 <body>
-<div class="app">
-<nav><div class="brand">✦ Galaxy <span>Client</span></div><div class="nav">
-<button class="active" data-page="home">Home</button><button data-page="mods">Mods</button><button data-page="performance">Performance</button><button data-page="settings">Settings</button>
-</div></nav>
-<main><div class="top"><div><div class="eyebrow">Galaxy Client • 0.1.0-dev</div><h1 id="title">Welcome back</h1><p class="sub" id="sub">A modern performance-first Eaglercraft client.</p></div><button class="btn" id="play">Play</button></div>
-<section id="content"></section></main>
+<div class="wrap">
+<header>
+<div class="logo">✦ Galaxy <span>Client</span></div>
+<nav><a href="#home">Home</a><a href="#clients">Launcher</a><a href="#features">Features</a><a href="game.html">Play</a></nav>
+</header>
+
+<main id="home">
+<section class="hero">
+<div>
+<span class="badge">⚡ Eaglercraft Web Client • Galaxy 0.1.0-dev</span>
+<h1>Your Minecraft.<br>In the browser.</h1>
+<p class="lead">A polished Galaxy web launcher for fast, simple access to the playable Eaglercraft client, performance controls and your Galaxy mod setup.</p>
+<div class="actions">
+<a class="btn primary" href="game.html">▶ Play Galaxy Client</a>
+<a class="btn secondary" href="#features">Explore Features</a>
 </div>
-<script>
-const mods=[{"name":"FPS Boost","cat":"performance"},{"name":"Entity Culling","cat":"performance"},{"name":"Particle Optimizer","cat":"performance"},{"name":"Dynamic FPS","cat":"performance"},{"name":"Fast Math","cat":"performance"},{"name":"Chunk Culling","cat":"performance"},{"name":"Render Distance","cat":"performance"},{"name":"Smart Animations","cat":"performance"},{"name":"Lazy Chunk Loading","cat":"performance"},{"name":"Fast World Load","cat":"performance"},{"name":"Memory Optimizer","cat":"performance"},{"name":"Texture Cache","cat":"performance"},{"name":"Model Cache","cat":"performance"},{"name":"Shader Cache","cat":"performance"},{"name":"Font Cache","cat":"performance"},{"name":"Light Cache","cat":"performance"},{"name":"Occlusion Culling","cat":"performance"},{"name":"Frustum Culling","cat":"performance"},{"name":"Block Culling","cat":"performance"},{"name":"Mob Culling","cat":"performance"},{"name":"Item Entity Culling","cat":"performance"},{"name":"Sign Culling","cat":"performance"},{"name":"Cloud Culling","cat":"performance"},{"name":"Weather Optimizer","cat":"performance"},{"name":"Sky Optimizer","cat":"performance"},{"name":"Fog Optimizer","cat":"performance"},{"name":"Biome Cache","cat":"performance"},{"name":"Chunk Mesh Cache","cat":"performance"},{"name":"World Renderer","cat":"performance"},{"name":"Render Batching","cat":"performance"},{"name":"Texture Animation Control","cat":"performance"},{"name":"Particle Limit","cat":"performance"},{"name":"Entity Tick Optimizer","cat":"performance"},{"name":"Block Entity Optimizer","cat":"performance"},{"name":"Redstone Optimizer","cat":"performance"},{"name":"Pathfinding Optimizer","cat":"performance"},{"name":"AI Tick Optimizer","cat":"performance"},{"name":"Random Tick Optimizer","cat":"performance"},{"name":"Sound Optimizer","cat":"performance"},{"name":"Network Optimizer","cat":"performance"},{"name":"Packet Compression","cat":"performance"},{"name":"Connection Stabilizer","cat":"performance"},{"name":"Ping Display","cat":"utility"},{"name":"FPS Display","cat":"utility"},{"name":"CPS Display","cat":"utility"},{"name":"Keystrokes","cat":"utility"},{"name":"Armor HUD","cat":"utility"},{"name":"Potion HUD","cat":"utility"},{"name":"Coordinates","cat":"utility"},{"name":"Clock","cat":"utility"},{"name":"Session Time","cat":"utility"},{"name":"Memory HUD","cat":"utility"},{"name":"Server Info","cat":"utility"},{"name":"Biome Display","cat":"utility"},{"name":"Direction HUD","cat":"utility"},{"name":"Reach Display","cat":"utility"},{"name":"Durability HUD","cat":"utility"},{"name":"Item Counter","cat":"utility"},{"name":"Crosshair","cat":"visual"},{"name":"Hit Color","cat":"visual"},{"name":"Damage Indicator","cat":"visual"},{"name":"Block Overlay","cat":"visual"},{"name":"Motion Blur","cat":"visual"},{"name":"Fullbright","cat":"visual"},{"name":"Clear Water","cat":"visual"},{"name":"Low Fire","cat":"visual"},{"name":"No Pumpkin Overlay","cat":"visual"},{"name":"Minimal Particles","cat":"visual"},{"name":"Minimal HUD","cat":"visual"},{"name":"Clean Scoreboard","cat":"visual"},{"name":"Chat Timestamps","cat":"utility"},{"name":"Chat Filter","cat":"utility"},{"name":"Compact Chat","cat":"utility"},{"name":"Chat Background","cat":"visual"},{"name":"Screenshot Helper","cat":"utility"},{"name":"Zoom","cat":"utility"},{"name":"Perspective","cat":"utility"},{"name":"Toggle Sprint","cat":"utility"},{"name":"Toggle Sneak","cat":"utility"},{"name":"Auto Reconnect","cat":"utility"},{"name":"Server Selector","cat":"utility"},{"name":"Quick Play","cat":"utility"},{"name":"Favorite Servers","cat":"utility"},{"name":"Mod Profiles","cat":"utility"},{"name":"Keybind Manager","cat":"utility"},{"name":"Config Manager","cat":"utility"},{"name":"Notifications","cat":"visual"},{"name":"FPS Graph","cat":"utility"},{"name":"Performance Graph","cat":"utility"},{"name":"Lag Meter","cat":"utility"},{"name":"World Time","cat":"utility"},{"name":"Compact Inventory","cat":"visual"},{"name":"Inventory Search","cat":"utility"},{"name":"Item Preview","cat":"visual"},{"name":"Tooltips","cat":"visual"},{"name":"Name Tags","cat":"visual"},{"name":"Entity Info","cat":"utility"},{"name":"Chunk Borders","cat":"visual"},{"name":"Grid Overlay","cat":"visual"},{"name":"Debug Panel","cat":"utility"}];
-const content=document.getElementById('content');
-function render(page='home'){
-document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
-if(page==='mods'){document.getElementById('title').textContent='Mods';document.getElementById('sub').textContent='100 Galaxy modules • performance, utility and visual controls';content.innerHTML='<div class="card"><input class="search" id="search" placeholder="Search 100 mods..."><div class="grid" id="mods"></div></div>';drawMods('');document.getElementById('search').oninput=e=>drawMods(e.target.value.toLowerCase());}
-else if(page==='performance'){document.getElementById('title').textContent='Performance';document.getElementById('sub').textContent='Tune the client for smoother browser gameplay.';content.innerHTML='<div class="card"><div class="hero"><div><strong>High FPS preset</strong><p>Entity culling • particle reduction • dynamic FPS • fast math</p></div><button class="btn" onclick="alert(\'Performance preset selected\')">Apply</button></div></div><div class="grid">'+['Entity Culling','Particle Reduction','Dynamic FPS','Fast Math','Animated Textures','Render Distance'].map(x=>'<div class="mod"><b>'+x+'</b><small>Galaxy optimization</small><span class="toggle"></span></div>').join('')+'</div>';}
-else if(page==='settings'){document.getElementById('title').textContent='Settings';document.getElementById('sub').textContent='Client preferences and profiles.';content.innerHTML='<div class="card"><h3>Profile</h3><p class="status">High FPS is the default. Custom mode is available through the client settings model.</p></div><div class="card"><h3>Build</h3><p class="status">Playable browser builds require a compatible Eaglercraft source/input set that you are licensed to use.</p></div>';}
-else{document.getElementById('title').textContent='Welcome back';document.getElementById('sub').textContent='A modern performance-first Eaglercraft client.';content.innerHTML='<div class="card hero"><div><strong>Galaxy Client is ready</strong><p>Open Mods to manage the 100-module catalog or Performance to tune FPS.</p></div><button class="btn" onclick="render(\'mods\')">Open Mods</button></div><div class="grid"><div class="mod"><b>100 Mods</b><small>Catalog ready</small></div><div class="mod"><b>High FPS</b><small>Default profile</small></div><div class="mod"><b>Modern UI</b><small>Galaxy glass theme</small></div></div>'}}
-function drawMods(q){document.getElementById('mods').innerHTML=mods.filter(m=>m.name.toLowerCase().includes(q)||m.cat.includes(q)).map(m=>'<div class="mod"><span class="toggle"></span><b>'+m.name+'</b><small>'+m.cat+'</small></div>').join('')}
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>render(b.dataset.page));document.getElementById('play').onclick=()=>location.href='game.html';render();
-</script></body></html>
+</div>
+<div class="panel">
+<h2>Galaxy Launcher</h2>
+<p class="muted">Quick access</p>
+<div class="stat"><span>Client</span><b>Galaxy</b></div>
+<div class="stat"><span>Version</span><b>26.2 base</b></div>
+<div class="stat"><span>Web runtime</span><b>WASM-GC</b></div>
+<div class="stat"><span>Mods catalog</span><b>100</b></div>
+</div>
+</section>
+
+<section id="clients">
+<h2 class="section-title">Launch fast</h2>
+<p class="section-sub">No desktop installer needed — open the web launcher and start from your browser.</p>
+<div class="cards">
+<div class="card"><div class="icon">🚀</div><h3>Galaxy Client</h3><p>Launch the real browser game build when the WASM bundle is available.</p><div class="actions"><a class="btn primary" href="game.html">Launch</a></div></div>
+<div class="card"><div class="icon">⚙️</div><h3>Performance</h3><p>High-FPS focused settings with culling, particle, texture and dynamic-FPS controls.</p></div>
+<div class="card"><div class="icon">✦</div><h3>Mod Hub</h3><p>Browse the Galaxy 100-mod catalog from one clean web interface.</p></div>
+</div>
+</section>
+
+<section id="features">
+<h2 class="section-title">Built for smoother browsing</h2>
+<p class="section-sub">Galaxy keeps the launcher simple while the game remains the real Eaglercraft runtime.</p>
+<div class="cards">
+<div class="card"><div class="icon">⚡</div><h3>Fast paths</h3><p>Large launch buttons and simple navigation get you into the client quickly.</p></div>
+<div class="card"><div class="icon">✨</div><h3>Premium feel</h3><p>Glass panels, animated depth and a Galaxy space theme inspired by modern client hubs.</p></div>
+<div class="card"><div class="icon">📱</div><h3>Mobile-ready</h3><p>Responsive layout keeps the launcher usable on smaller screens too.</p></div>
+</div>
+</section>
+</main>
+
+<footer>© 2026 Galaxy Client • Web launcher • Actual gameplay is provided by the generated Eaglercraft runtime.</footer>
+</div>
+</body>
+</html>
