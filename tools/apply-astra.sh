@@ -20,11 +20,12 @@ if [[ -z "$BOOT" ]]; then
   exit 0
 fi
 
-python3 - "$BOOT" "$DEST/net/minecraft/client/particle/ParticleEngine.java" "$DEST/net/minecraft/client/renderer/texture/TextureManager.java" "$DEST/net/minecraft/client/renderer/entity/EntityRenderDispatcher.java" <<'PY'
+python3 - "$BOOT" "$DEST/net/minecraft/client/particle/ParticleEngine.java" "$DEST/net/minecraft/client/renderer/texture/TextureManager.java" "$DEST/net/minecraft/client/renderer/entity/EntityRenderDispatcher.java" "$MODE" <<'PY'
 from pathlib import Path
 import sys
 
-boot, particles, textures, entities = map(Path, sys.argv[1:])
+boot, particles, textures, entities = map(Path, sys.argv[1:5])
+mode = sys.argv[5] if len(sys.argv) > 5 else ""
 
 def add_import(text, import_line):
     if import_line in text:
@@ -40,20 +41,18 @@ def add_import(text, import_line):
     return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
 
 # 1) Bootstrap Galaxy once at the real client bootstrap point.
-s = boot.read_text()
-s = add_import(s, "import astra.integration.AstraBootstrap;")
-needle = "isBootstrapped = true;"
-if "/* GALAXY_CLIENT_BOOTSTRAP */" not in s and needle in s:
-    s = s.replace(
-        needle,
-        needle + "\n         /* GALAXY_CLIENT_BOOTSTRAP */\n         AstraBootstrap.initialize();",
-        1,
-    )
-boot.write_text(s)
-
-# --no-bootstrap intentionally means source overlay only; do not patch runtime hooks.
-if len(sys.argv) > 5:
-    raise SystemExit("unexpected arguments")
+# --no-bootstrap skips only this entry-point patch; the performance hooks below still apply.
+if mode != "--no-bootstrap":
+    s = boot.read_text()
+    s = add_import(s, "import astra.integration.AstraBootstrap;")
+    needle = "isBootstrapped = true;"
+    if "/* GALAXY_CLIENT_BOOTSTRAP */" not in s and needle in s:
+        s = s.replace(
+            needle,
+            needle + "\n         /* GALAXY_CLIENT_BOOTSTRAP */\n         AstraBootstrap.initialize();",
+            1,
+        )
+    boot.write_text(s)
 
 # 2) Particle admission gate: avoid allocating new particles in the FPS preset.
 if particles.exists():
