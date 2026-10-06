@@ -17,6 +17,8 @@ concurrency:
 jobs:
   compile:
     runs-on: ubuntu-latest
+    env:
+      GRADLE_OPTS: "-Xmx8g -XX:MaxMetaspaceSize=1g"
     steps:
       - name: Checkout Galaxy Client
         uses: actions/checkout@v4
@@ -41,23 +43,23 @@ jobs:
 
       - name: Compile game sources
         working-directory: eaglercraft
-        run: ./gradlew :game:compileJava --console=plain --no-daemon
+        run: ./gradlew :game:compileJava --console=plain --no-daemon --max-workers=2
 
       - name: Build browser JavaScript assets
         working-directory: eaglercraft
-        run: ./gradlew :target_teavm:generateJavaScript --console=plain --no-daemon --max-workers=2
+        run: ./gradlew :target_teavm:generateJavaScript --console=plain --no-daemon --max-workers=1
 
       - name: Build client WebAssembly GC
         working-directory: eaglercraft
-        run: ./gradlew :target_teavm_wasm_gc:generateWasmGC --console=plain --no-daemon --max-workers=2
+        run: ./gradlew :target_teavm_wasm_gc:generateWasmGC --console=plain --no-daemon --max-workers=1
 
       - name: Build mesh WebAssembly worker
         working-directory: eaglercraft
-        run: ./gradlew :target_teavm_wasm_gc_mesh:generateWasmGC --console=plain --no-daemon --max-workers=2
+        run: ./gradlew :target_teavm_wasm_gc_mesh:generateWasmGC --console=plain --no-daemon --max-workers=1
 
       - name: Build singleplayer server WebAssembly worker
         working-directory: eaglercraft
-        run: ./gradlew :target_teavm_wasm_gc_server:generateWasmGC --console=plain --no-daemon --max-workers=2
+        run: ./gradlew :target_teavm_wasm_gc_server:generateWasmGC --console=plain --no-daemon --max-workers=1
 
       - name: Assemble the real WASM-GC web client
         working-directory: eaglercraft
@@ -79,7 +81,7 @@ jobs:
           grep -q "classes.wasm" "$WEB/index.html"
           grep -q "worker-bootstrap.js" "$WEB/index.html"
           echo "Galaxy playable WASM-GC web bundle validated."
-          find "$WEB" -maxdepth 2 -type f -printf '%p %s bytes\\n' | sort
+          find "$WEB" -maxdepth 2 -type f -printf '%p %s bytes\n' | sort
 
       - name: Package Galaxy launcher and game
         run: |
@@ -91,7 +93,7 @@ jobs:
           cp web/index.html dist/galaxy-launcher.html
           cp web/game.html dist/game.html
           cp README.md dist/README.md
-          printf 'Galaxy Client WASM-GC playable build completed.\\n' > dist/BUILD_OK.txt
+          printf 'Galaxy Client WASM-GC playable build completed.\n' > dist/BUILD_OK.txt
           test -s dist/game/index.html
           test -s dist/game/classes.wasm
           test -s dist/game/server-worker.wasm
