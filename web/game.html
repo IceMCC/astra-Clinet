@@ -1,40 +1,10 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1">
-<title>Galaxy Client — Game</title>
-<style>html,body,#game_frame{margin:0;width:100%;height:100%;overflow:hidden;background:#000}#status{position:fixed;inset:0;display:grid;place-items:center;color:#dce7ff;font:600 16px system-ui;background:#050816;z-index:2}#status small{display:block;margin-top:8px;color:#8fa2c9;font-weight:400}</style>
-</head>
-<body>
-<div id="status">Starting Galaxy Client…<small id="detail">Loading browser runtime</small></div>
-<div id="game_frame"></div>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0; url=game/index.html"><title>Galaxy Client — Game</title>
+<style>html,body{margin:0;height:100%;background:#050816;color:#dce7ff;font:600 16px system-ui}main{height:100%;display:grid;place-items:center}small{display:block;margin-top:8px;color:#8fa2c9;font-weight:400}</style></head>
+<body><main>Starting Galaxy Client…<small>Loading the generated WASM-GC runtime.</small></main>
 <script>
 "use strict";
-(async function(){
-  const status=document.getElementById("status"), detail=document.getElementById("detail");
-  const exists=async p=>{try{const r=await fetch(p,{method:"HEAD",cache:"no-store"});return r.ok}catch(e){return false}};
-  if(location.protocol==="file:"){detail.textContent="Run the client from HTTP(S), not a file:// URL.";return}
-  if(!(await exists("eagruntime.js")) || !(await exists("classes.wasm"))){
-    detail.textContent="WASM runtime files are not present in this build.";
-    return;
-  }
-  let assets="assets.epk";
-  if(!(await exists(assets)) && await exists("assets.epw")) assets="assets.epw";
-  window.__eaglercraftXLoaderContext={
-    getEaglercraftXOpts:function(){return {demoMode:false,localesURI:"lang/",worldsDB:"worlds",servers:[],relays:[]}},
-    getEagRuntimeJSURL:function(){return "eagruntime.js"},
-    getClassesWASMURL:function(){return "classes.wasm"},
-    getClassesDeobfWASMURL:function(){return "classes.wasm-deobfuscator.wasm"},
-    getClassesTEADBGURL:function(){return "classes.wasm.teadbg"},
-    getEPKFiles:function(){return [{name:assets,path:"",data:null}]},
-    getRootElement:function(){return document.getElementById("game_frame")},
-    getMainArgs:function(){return []},
-    getImageURL:function(){return null},
-    runMain:function(fn){setTimeout(fn,10)}
-  };
-  const s=document.createElement("script");s.src="eagruntime.js";s.onload=()=>status.remove();s.onerror=()=>{detail.textContent="Could not load eagruntime.js."};document.head.appendChild(s);
-})();
-</script>
-</body>
-</html>
+if(location.protocol==="file:"){document.querySelector("small").textContent="Run Galaxy Client from HTTP(S), not file://."}
+else{location.replace("game/index.html")}
+</script></body></html>
