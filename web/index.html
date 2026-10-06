@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Galaxy Client</title>
+<style>
+html,body{margin:0;height:100%;background:#070b18;color:#eef3ff;font-family:system-ui,sans-serif}
+body{display:grid;place-items:center}
+main{width:min(900px,92vw);padding:32px;border:1px solid #26345c;border-radius:20px;background:#0d1428;box-sizing:border-box}
+h1{margin:0 0 8px;font-size:42px}
+p{color:#aeb9d8;line-height:1.55}
+button{padding:12px 18px;border:0;border-radius:10px;background:#6ea8ff;color:#07101f;font-weight:700;cursor:pointer}
+#status{margin-top:18px;padding:14px;border-radius:10px;background:#111c35;color:#cbd7f3}
+</style>
+</head>
+<body>
+<main>
+<h1>🌌 Galaxy Client</h1>
+<p>Performance-focused Eaglercraft client project. This page is the GitHub Pages launcher shell; the actual browser game must be built from an Eaglercraft-compatible source/input set that you are licensed to use.</p>
+<button id="play" type="button">Play Galaxy Client</button>
+<div id="status">Build status: waiting for a playable HTML build.</div>
+</main>
+<script>
+document.getElementById("play").addEventListener("click",()=>{document.getElementById("status").textContent="The playable game bundle is not embedded yet. Run the GitHub build with your licensed Minecraft/Eaglercraft input, then publish its generated HTML/web output here.";});
+</script>
+</body>
+</html>
