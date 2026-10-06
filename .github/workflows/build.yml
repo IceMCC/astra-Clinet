@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Axellgamer/Eaglercraft-26.3
-          ref: main
+          ref: f73bff91f0f0840bc958c09ab536dbba1e146b2e
           path: eaglercraft
 
       - name: Set up Java 25
@@ -37,7 +37,7 @@ jobs:
       - name: Check source overlay
         run: |
           chmod +x tools/apply-astra.sh
-          ./tools/apply-astra.sh eaglercraft --no-bootstrap
+          ./tools/apply-astra.sh eaglercraft
           
       - name: Compile game sources
         working-directory: eaglercraft
