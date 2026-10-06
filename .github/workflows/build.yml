@@ -79,6 +79,7 @@ jobs:
           mkdir -p dist/game
           cp -R eaglercraft/target_teavm_wasm_gc/build/web/. dist/game/
           cp web/index.html dist/index.html
+          cp web/mods.js dist/mods.js
           cp web/index.html dist/galaxy-launcher.html
           cp web/game.html dist/game.html
           cp README.md dist/README.md
