@@ -1,0 +1,50 @@
+name: Galaxy Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: galaxy-pages-static
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout Galaxy Client
+        uses: actions/checkout@v4
+
+      - name: Build Pages package
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist
+          cp web/index.html dist/index.html
+          cp web/mods.js dist/mods.js
+          cp web/game.html dist/game.html
+          touch dist/.nojekyll
+          test -s dist/index.html
+          test -s dist/mods.js
+          echo "Galaxy Pages package ready."
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
