@@ -21,10 +21,10 @@ jobs:
       - name: Checkout Galaxy Client
         uses: actions/checkout@v4
 
-      - name: Checkout Eaglercraft 26.3 baseline
+      - name: Checkout Eaglercraft 26.2 baseline
         uses: actions/checkout@v4
         with:
-          repository: Axellgamer/Eaglercraft-26.3
+          repository: Joseytesting/Eaglercraft-26.2-Fabric-API-and
           ref: f73bff91f0f0840bc958c09ab536dbba1e146b2e
           path: eaglercraft
 
